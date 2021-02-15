@@ -1,6 +1,4 @@
-import java.util.ArrayList;
 import java.util.Hashtable;
-
 
 public class GraphDatabase {
 	CityNode start;
@@ -12,51 +10,21 @@ public class GraphDatabase {
 		this.finish = finish;
 	}
 	
-	public ArrayList<String> findRoute() {
-		PriorityQueue q = new PriorityQueue();
+	public void findRoute() {
 		
-		ArrayList<String> path = new ArrayList<String>();
-		
-		if(start == null || finish == null) {
-			return path;
-		}
-		
-		ArrayList<String> path = new ArrayList<String>();
-		path.add(start.name);
-		start.planRoute(q, 0, path);
-		return path;
 	}
 	
 	public class CityNode {
 		String name;
-		Hashtable<CityNode, Integer> neighborDistance;
-		Hashtable<CityNode, Integer> neighborTime;
-		double xPos;
-		double yPos;
+		Hashtable<String, Integer> neighborDistance;
+		Hashtable<String, Integer> neighborTime;
+	
 		
 		public void findClosest() {
-			//basically just a distance function for finding the 
+			
 		}
 		
-		public void planRoute(PriorityQueue q, int g, ArrayList<String> path) {
-			Hashtable<Integer, String> f;
-			//q.addAll(neighborDistance.values());
-			
-			for(String key : neighborDistance.keySet()) {
-				f.put(g + neighborTime.get(key) + neighborDistance.get(key), key);
-			}
-			
-			q.addAll(f);
-			
-			int smallestF = q.remove();
-			String nextCity = f.get(smallestF);
-			path.add(nextCity);
-			if(nextCity == finish.name) {
-				return;
-			} else {
-				//need some way of storing the cityNode objects of the neighbors
-				nextCity.planRoute(q, g + neighborTime.get(nextCity), path);
-			}
+		public void planRoute() {
 			
 		}
 		
