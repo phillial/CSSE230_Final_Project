@@ -5,11 +5,15 @@ import java.util.Hashtable;
 public class GraphDatabase {
 	CityNode start;
 	CityNode finish;
+	Hashtable<CityNode, Double> citiesHeuristic;
 	PriorityQueue q;
 	
 	public GraphDatabase(CityNode start, CityNode finish) {
 		this.start = start;
 		this.finish = finish;
+		for(CityNode city : citiesHeuristic.keySet()) {
+			citiesHeuristic.put(city, distance(city, finish));
+		}
 	}
 	
 	public ArrayList<String> findRoute() {
@@ -36,32 +40,48 @@ public class GraphDatabase {
 	
 	public class CityNode {
 		String name;
-		Hashtable<String, Integer> neighborDistance;
-		Hashtable<String, Integer> neighborTime;
-	
+		Hashtable<CityNode, Double> neighborDistance;
+		double xpos;
+		double ypos;
 		
+		public CityNode(String name, int xpos, int ypos) {
+			this.name = name;
+			this.xpos = xpos;
+			this.ypos = ypos;
+		}
+		
+		/**
+		 * THIS METHOD REALLY SHOULDENT BE HERE IT INCREASES THE RUNTIME BY A LOT
+		 * I THINK AND IT SHOULD PROBABLY BE DONE EARLEIR WHEN THE CITIES ARE ALL 
+		 * ADDED IN THE FIRST PLACE
+		 */
 		public void findClosest() {
+			PriorityQueue q = new PriorityQueue();
 			
+			for(int i = 0; i < 4; i++) {	
+				neighborDistance.put(city, distance(city, finish))
+			}
 		}
 		
 		public void planRoute(PriorityQueue q, int g, ArrayList<String> path) {
-			Hashtable<Integer, String> f;
+			Hashtable<Double, CityNode> f;
 			//q.addAll(neighborDistance.values());
 			
-			for(String key : neighborDistance.keySet()) {
-				f.put(g + neighborTime.get(key) + neighborDistance.get(key), key);
+			for(CityNode city : neighborDistance.keySet()) {
+				f.put(g + neighborDistance.get(city) + citiesHeuristic.get(city), city);
 			}
 			
-			q.addAll(f);
+			q.addAll(f); //might need to replace with another for loop that iterates through f and puts every double in
 			
-			int smallestF = q.remove();
-			String nextCity = f.get(smallestF);
-			path.add(nextCity);
-			if(nextCity == finish.name) {
+			
+			double smallestF = q.remove();
+			CityNode nextCity = f.get(smallestF);
+			path.add(nextCity.name);
+			g += neighborDistance.get(nextCity);
+			if(nextCity.name == finish.name) { // might need to do .equals() for comparing two strings
 				return;
 			} else {
-				//need some way of storing the cityNode objects of the neighbors
-				nextCity.planRoute(q, g + neighborTime.get(nextCity), path);
+				nextCity.planRoute(q, g, path);
 			}
 			
 		}
