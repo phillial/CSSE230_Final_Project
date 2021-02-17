@@ -27,6 +27,13 @@ public class GraphDatabase {
 		return path;
 	}
 	
+	public double distance(CityNode c1, CityNode c2) {
+	        double y = c1.ypos - c2.ypos;
+	        double x = c1.xpos - c2.xpos;
+	        double distance = Math.sqrt(Math.pow(y, 2) + Math.pow(x, 2));
+	        return distance;
+	}
+	
 	public class CityNode {
 		String name;
 		Hashtable<String, Integer> neighborDistance;

@@ -124,7 +124,15 @@ public class MapComponent{
 	}
 	
 	protected String buttonPressed(String start, String finish, String distance, String time) {
-		return db.findRoute();
+		ArrayList<String> resultString = db.findRoute();
+		String result = "Path: ";
+		for(int i = 0; i < resultString.size(); i++) {
+			if(i == resultString.size() -1) {
+				result+= resultString.get(i);
+			}
+			result+= resultString.get(i)+" to ";
+		}
+		return result;
 	}
 
 	private void addSpace(JPanel inner, JLabel blank) {
