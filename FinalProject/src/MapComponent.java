@@ -27,8 +27,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import GraphDatabase.CityNode;
-
 public class MapComponent{
 	private JComponent comp;
 	private JPanel panel;
@@ -125,7 +123,7 @@ public class MapComponent{
 	}
 	
 	protected String buttonPressed(String start, String finish, String distance, String time) {
-		ArrayList<String> resultString = db.findRoute();
+		ArrayList<String> resultString = db.findRoute(start, finish);
 		String result = "Path: ";
 		for(int i = 0; i < resultString.size(); i++) {
 			if(i == resultString.size() -1) {
