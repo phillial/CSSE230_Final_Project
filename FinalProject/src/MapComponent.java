@@ -53,10 +53,7 @@ public class MapComponent{
         
         JButton findRoute = new JButton("Calculate Distance");
         inner.add(findRoute);
-       
         
-         
-   
         JLabel blank = new JLabel();
         blank.setBackground(Color.GRAY);
         inner.add(blank);
@@ -66,18 +63,30 @@ public class MapComponent{
 		JLabel scLabel = new JLabel("Insert Start City Here: ");
 		inner.add(scLabel);
 		
+		String[] possibleCities = {
+				"", "Whitehorse", "Juneau","Yellowknife","Edmonton","Victoria","Regina","Winnipeg",	"Olympia","Salem","Sacramento","Carson City",
+				"Boise","Helena","Salt Lake City","Phoenix","Santa Fe", "Denver","Bismarck","Pierre","Lincoln","Topeka","Oklahoma City","Austin",
+				"Baton Rouge","Little Rock","Jefferson City", "Des Moines","St Paul","Madison", "Springfield","Jackson","Montgomery","Nashville",
+				"Frankfort","Indianapolis","Atlanta","Columbia", "Tallahassee", "Raleigh","Richmond","Charleston","Columbus","Lansing","Harrisburg",
+				"Annapolis","Dover","Trenton","Albany","Hartford", "Providence","Boston","Montpelier","Concord", "Augusta","Toronto","Quebec City",				"St. John's",
+				"Fredericton","Charlottetown","Halifax","Iqaluit"
+		};
 		
-		JTextField startCity = new JTextField();
+		
+		JComboBox startCity = new JComboBox(possibleCities);
+		startCity.setEditable(true);
+
 		inner.add(startCity);
-		String start = startCity.getSelectedText();
+		String start = (String) startCity.getSelectedItem();
 		addSpace(inner, blank);
-		
 		JLabel fcLabel = new JLabel("Insert Destination City Here: ");
 		inner.add(fcLabel);
 		
-        JTextField finishCity = new JTextField();
+		
+		JComboBox finishCity = new JComboBox(possibleCities);
+		finishCity.setEditable(true);;
         inner.add(finishCity);
-        String finish = finishCity.getSelectedText();
+        String finish = (String) finishCity.getSelectedItem();
         addSpace(inner, blank);
         
         JLabel mdLabel = new JLabel("Insert Max Distance Here: ");
