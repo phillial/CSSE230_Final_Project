@@ -33,6 +33,8 @@ public class MapComponent{
 	private JFrame display;
 	private BufferedImage image;
 	private GraphDatabase db;
+	private String finish;
+	private String start;
 	
 	
 	public MapComponent(GraphDatabase db) {
@@ -79,15 +81,42 @@ public class MapComponent{
 		inner.add(startCity);
 		String start = (String) startCity.getSelectedItem();
 		addSpace(inner, blank);
+		
+		startCity.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				finish = startCity.getSelectedItem().toString();
+				startCity.removeAllItems();
+				startCity.addItem(finish);
+				String[] newList = search(finish, possibleCities);
+				for(int i = 0; i < newList.length; i++) {
+					startCity.addItem(newList[i]);
+				}
+			}
+        });
+		
 		JLabel fcLabel = new JLabel("Insert Destination City Here: ");
 		inner.add(fcLabel);
 		
 		
 		JComboBox finishCity = new JComboBox(possibleCities);
-		finishCity.setEditable(true);;
+		finishCity.setEditable(true);
         inner.add(finishCity);
         String finish = (String) finishCity.getSelectedItem();
         addSpace(inner, blank);
+        
+        finishCity.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				finish = finishCity.getSelectedItem().toString();
+				finishCity.removeAllItems();
+				finishCity.addItem(finish);
+				String[] newList = search(finish, possibleCities);
+				for(int i = 0; i < newList.length; i++) {
+					finishCity.addItem(newList[i]);
+				}
+			}
+        });
         
         JLabel mdLabel = new JLabel("Insert Max Distance Here: ");
 		inner.add(mdLabel);
@@ -129,6 +158,34 @@ public class MapComponent{
         display.add(panel);  
         display.setSize(2000, 1000);    
         display.setLayout(null);
+	}
+	
+	protected String[] search(String city, String[] c) {
+		ArrayList<String> newList = new ArrayList<String>();
+		if(city.length() > 0) {
+			int count = 0;
+			for(int i = 0; i < c.length; i++) {
+				for(int j = 0; j < c[i].length() && j < city.length(); j++) {
+					if(city.charAt(j) != c[i].charAt(j)) {
+						
+					}else {
+						count++;
+					}
+				}
+				if(count >= city.length()) {//if what has been type, aligns with a result add result to list
+					newList.add(c[i]);
+				}
+				count = 0;
+			}
+			String[] result = new String[newList.size()];
+			for(int i = 0; i < newList.size(); i++) {
+				result[i] = newList.get(i);
+			}
+			return result;
+		}
+		else {
+			return c;
+		}
 	}
 	
 	protected String buttonPressed(String start, String finish, String distance, String time) {
