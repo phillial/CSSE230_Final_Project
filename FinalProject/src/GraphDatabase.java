@@ -10,39 +10,41 @@ public class GraphDatabase {
 	HashSet<CityNode> cities;
 	
 	public GraphDatabase() { 
-		this.start = null;
-		this.finish = null;
+//		this.start = null;
+//		this.finish = null;
+		this.citiesHeuristic = new Hashtable<CityNode, Double>();
 	}
+	
 	
 	public ArrayList<String> findRoute(String startName, String finishName) {
 		for(CityNode city : cities) {
-			if(this.start == null || this.finish == null) {
-				if(startName.equals(city.name)) this.start = start;
-				if(finishName.equals(city.name)) this.finish = finish;	
-			}
+			if(startName.equals(city.name)) this.start = city;
+			if(finishName.equals(city.name)) this.finish = city;	
 		}
-		
-		
 		for(CityNode city : cities) {
-			citiesHeuristic.put(city, distance(city, finish));
+			double d = distance(city, finish);
+			citiesHeuristic.put(city, d);
 		}
-		
-		
-		PriorityQueue<Double> q = new PriorityQueue<Double>();
-		ArrayList<String> path = new ArrayList<String>();
 		this.start = start;
 		this.finish = finish;
-		
-		if(start == null || finish == null) return path;		
-		
-		path.add(start.name);
-		start.planRoute(q, 0, path);
-		this.start = null;
-		this.finish = null;
-		citiesHeuristic.clear();
-		return path;
-	}
+		if(start == null || finish == null) return null;
 	
+// ************************* END OF SETUP *************************
+		
+		Hashtable<CityNode, CityNode> closestParent = new Hashtable<CityNode, CityNode>();
+		
+		Hashtable<CityNode, Double> g = new Hashtable<CityNode, Double>();
+		g.put(start, 0.);
+		
+		MyPriorityQueue<Double> q = new MyPriorityQueue<Double>(); //openSet
+		q.add(citiesHeuristic.get(start));
+		
+		Hashtable<Double, CityNode> qMap = new Hashtable<Double, CityNode>();
+		qMap.put(citiesHeuristic.get(start), start);	
+		
+		return start.planRoute(g, closestParent, qMap, q);
+	}
+
 	public double distance(CityNode c1, CityNode c2) {
 	        double y = c1.ypos - c2.ypos;
 	        double x = c1.xpos - c2.xpos;
@@ -60,53 +62,87 @@ public class GraphDatabase {
 			this.name = name;
 			this.xpos = xpos;
 			this.ypos = ypos;
+			this.neighborDistance = new Hashtable<CityNode, Double>();
 		}
 		
 		
-		/**
-		 * THIS METHOD REALLY SHOULDENT BE HERE IT INCREASES THE RUNTIME BY A LOT
-		 * I THINK AND IT SHOULD PROBABLY BE DONE EARLEIR WHEN THE CITIES ARE ALL 
-		 * ADDED IN THE FIRST PLACE
-		 */
 		public void findNeighbors() {
-			PriorityQueue<Double> q = new PriorityQueue<Double>();
+			MyPriorityQueue<Double> q = new MyPriorityQueue<Double>();
 			Hashtable<Double, CityNode> f = new Hashtable<Double, CityNode>();
-			
-			for(CityNode city : cities) f.put(distance(this, city), city);
-			
-			q.addAll(f.keySet());
-			
+			for(CityNode city : cities) {
+				double d = distance(this, city);
+				f.put(distance(this, city), city);
+				q.add(d);
+			}
+			q.poll();
 			for(int i = 0; i < 4; i++) {
 				double smallestDistance = q.poll();
-				neighborDistance.put(f.get(smallestDistance), smallestDistance);
+				CityNode neighbor = f.get(smallestDistance);
+				neighborDistance.put(neighbor, smallestDistance);
+				neighbor.neighborDistance.put(this, smallestDistance);
 			}
 			
 		}
 		
 		
+		public ArrayList<String> makePath(Hashtable<CityNode, CityNode> closestParent, ArrayList<String> path) {
+			if (!closestParent.containsKey(this)) {
+				return path;
+			}
+			CityNode parent = closestParent.get(this);
+			path.add(0, parent.name);
+			closestParent.remove(this);
+			return parent.makePath(closestParent, path);
+		}
 		
-		public void planRoute(PriorityQueue<Double> q, int g, ArrayList<String> path) {
-			Hashtable<Double, CityNode> f = new Hashtable<Double, CityNode>();
+		
+		public ArrayList<String> planRoute(Hashtable<CityNode, Double> g, Hashtable<CityNode, CityNode> closestParent, Hashtable<Double, CityNode> qMap, MyPriorityQueue<Double> q) {
 			
-			
-			for(CityNode city : neighborDistance.keySet()) {
-				f.put(g + neighborDistance.get(city) + citiesHeuristic.get(city), city);
+			if(name.equals(finish.name)) {
+				ArrayList<String> path = new ArrayList<String>();
+				path.add(name);
+				return this.makePath(closestParent, path);
 			}
 			
-			q.addAll(f.keySet()); 
+			double fToRemove = q.poll();
+			qMap.remove(fToRemove);
 			
+			for(CityNode neighbor : neighborDistance.keySet()) {
+				double gTemp = g.get(this) + neighborDistance.get(neighbor);
+				
+				if (g.containsKey(neighbor)) {
+					if (gTemp < g.get(neighbor)) {
+						closestParent.remove(neighbor);
+						closestParent.put(neighbor, this);
+
+						g.remove(neighbor);
+						g.put(neighbor, gTemp);
+
+						double f = gTemp + citiesHeuristic.get(neighbor);
+						q.add(f);
+						qMap.put(f, neighbor);
+					} 
+				} else {
+					g.put(neighbor, gTemp);
+					
+					double f = gTemp + citiesHeuristic.get(neighbor);
+					q.add(f);
+					qMap.put(f, neighbor);
+					
+					closestParent.put(neighbor, this);
+				}
+				
+			}
 			
-			double smallestF = q.poll();
-			CityNode nextCity = f.get(smallestF);
-			path.add(nextCity.name);
-			g += neighborDistance.get(nextCity);
-			if(nextCity.name.equals(finish.name)) {
-				return;
-			} else {
-				nextCity.planRoute(q, g, path);
-			}	
+			if(!q.isEmpty()) {
+				double nextDistance = q.peek();
+				CityNode next = qMap.get(nextDistance);
+				return next.planRoute(g, closestParent, qMap, q);
+			}
+			
+			return null;
+			
 		}
 		
 	}
-	
 }

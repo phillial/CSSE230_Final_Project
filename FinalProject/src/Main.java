@@ -1,9 +1,8 @@
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 
-public class GUIViewer {
-	
-	public GUIViewer() {
+public class Main {
+
+	public static void main(String[] args) {
 		GraphDatabase db = new GraphDatabase();
 		CityNodeCreator cnc = new CityNodeCreator(db);
 		
@@ -15,6 +14,7 @@ public class GUIViewer {
 		
 		MapComponent component = new MapComponent(db);
 		component.drawScreen();
+
 	}
-	
+
 }

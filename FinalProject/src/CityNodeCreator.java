@@ -10,8 +10,19 @@ public class CityNodeCreator {
 	public CityNodeCreator(GraphDatabase g) {
 		this.g = g;
 		g.cities = createCities();
+		
+		for(GraphDatabase.CityNode city : g.cities) {
+			city.findNeighbors();
+		}
 	}
 	
+	
+	
+	//Sacramento
+	//Cheyenne
+	
+	//Winnipeg
+	//Edmonton
 	
 	public HashSet<GraphDatabase.CityNode> createCities() {
 		HashSet<GraphDatabase.CityNode> cities = new HashSet<GraphDatabase.CityNode>();

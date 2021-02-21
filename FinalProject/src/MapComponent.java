@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -21,6 +20,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -53,10 +53,7 @@ public class MapComponent{
         
         JButton findRoute = new JButton("Calculate Distance");
         inner.add(findRoute);
-       
         
-         
-   
         JLabel blank = new JLabel();
         blank.setBackground(Color.GRAY);
         inner.add(blank);
@@ -66,18 +63,30 @@ public class MapComponent{
 		JLabel scLabel = new JLabel("Insert Start City Here: ");
 		inner.add(scLabel);
 		
+		String[] possibleCities = {
+				"", "Whitehorse", "Juneau","Yellowknife","Edmonton","Victoria","Regina","Winnipeg",	"Olympia","Salem","Sacramento","Carson City",
+				"Boise","Helena","Salt Lake City","Phoenix","Santa Fe", "Denver","Bismarck","Pierre","Lincoln","Topeka","Oklahoma City","Austin",
+				"Baton Rouge","Little Rock","Jefferson City", "Des Moines","St Paul","Madison", "Springfield","Jackson","Montgomery","Nashville",
+				"Frankfort","Indianapolis","Atlanta","Columbia", "Tallahassee", "Raleigh","Richmond","Charleston","Columbus","Lansing","Harrisburg",
+				"Annapolis","Dover","Trenton","Albany","Hartford", "Providence","Boston","Montpelier","Concord", "Augusta","Toronto","Quebec City",				"St. John's",
+				"Fredericton","Charlottetown","Halifax","Iqaluit"
+		};
 		
-		JTextField startCity = new JTextField();
+		
+		JComboBox startCity = new JComboBox(possibleCities);
+		startCity.setEditable(true);
+
 		inner.add(startCity);
-		String start = startCity.getSelectedText();
+		//String start = (String) startCity.getSelectedItem();
 		addSpace(inner, blank);
-		
 		JLabel fcLabel = new JLabel("Insert Destination City Here: ");
 		inner.add(fcLabel);
 		
-        JTextField finishCity = new JTextField();
+		
+		JComboBox finishCity = new JComboBox(possibleCities);
+		finishCity.setEditable(true);;
         inner.add(finishCity);
-        String finish = finishCity.getSelectedText();
+        //String finish = (String) finishCity.getSelectedItem();
         addSpace(inner, blank);
         
         JLabel mdLabel = new JLabel("Insert Max Distance Here: ");
@@ -99,7 +108,13 @@ public class MapComponent{
         
          ActionListener button = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	 blank.setText(buttonPressed(start, finish, distance, time));
+        	 String start = (String) startCity.getSelectedItem();
+        	 String finish = (String) finishCity.getSelectedItem();
+        	 
+        	 String result = buttonPressed(start, finish);
+        	 if(start.equals(finish)) result = "you have imputed the same cities";
+        	 System.out.println(result);
+        	 blank.setText(result);
          }
         };
         findRoute.addActionListener(button);
@@ -122,14 +137,26 @@ public class MapComponent{
         display.setLayout(null);
 	}
 	
-	protected String buttonPressed(String start, String finish, String distance, String time) {
+	protected String buttonPressed(String start, String finish) {
 		ArrayList<String> resultString = db.findRoute(start, finish);
+		if(resultString == null) return "Failure";
+		if(resultString.size() == 1) return "What...?";
+		
+		System.out.println("Path size: " + resultString.size());
+		System.out.print("array: ");
+		for (int i = 0; i < resultString.size(); i++) {
+			System.out.print(resultString.get(i)+ " ");
+		}
+		System.out.println();
+		System.out.println();
+		
 		String result = "Path: ";
 		for(int i = 0; i < resultString.size(); i++) {
 			if(i == resultString.size() -1) {
 				result+= resultString.get(i);
+			} else {
+				result+= resultString.get(i)+" to ";
 			}
-			result+= resultString.get(i)+" to ";
 		}
 		return result;
 	}
