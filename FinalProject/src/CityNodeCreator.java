@@ -16,13 +16,7 @@ public class CityNodeCreator {
 		}
 	}
 	
-	
-	
-	//Sacramento
-	//Cheyenne
-	
-	//Winnipeg
-	//Edmonton
+
 	
 	public HashSet<GraphDatabase.CityNode> createCities() {
 		HashSet<GraphDatabase.CityNode> cities = new HashSet<GraphDatabase.CityNode>();
