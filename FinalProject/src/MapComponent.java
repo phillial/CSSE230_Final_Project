@@ -25,6 +25,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class MapComponent{
@@ -152,6 +154,7 @@ public class MapComponent{
        	 	String result = buttonPressed(start, finish, distance, time);
        	 	System.out.println(result);
        	 	outer.removeAll();
+       	 	JTextArea answer = new JTextArea();
        	 	outer.add(createAnswer(result, answer, distance, time));
          }
         };
@@ -174,8 +177,8 @@ public class MapComponent{
         display.setLayout(null);
 	}
 	
-	public JTextArea createAnswer(String result, JTextArea answer) {
-		int distance = db.getDistance();
+	public JTextArea createAnswer(String result, JTextArea answer, String maxDistance, String maxTime) {
+		int distance = (int) db.getDistance();
 		int hours = distance / 60;
 		int minutes = distance % 60;
 		int max = Integer.MAX_VALUE;
