@@ -8,6 +8,7 @@ public class GraphDatabase {
 	CityNode finish;
 	Hashtable<CityNode, Double> citiesHeuristic;
 	HashSet<CityNode> cities;
+	int totalDistance;
 	
 	public GraphDatabase() { 
 //		this.start = null;
@@ -29,6 +30,7 @@ public class GraphDatabase {
 		this.finish = finish;
 		if(start == null || finish == null) return null;
 	
+		totalDistance = 0;
 // ************************* END OF SETUP *************************
 		
 		Hashtable<CityNode, CityNode> closestParent = new Hashtable<CityNode, CityNode>();
@@ -101,6 +103,7 @@ public class GraphDatabase {
 			if(name.equals(finish.name)) {
 				ArrayList<String> path = new ArrayList<String>();
 				path.add(name);
+				totalDistance += 0;
 				return this.makePath(closestParent, path);
 			}
 			
@@ -137,6 +140,7 @@ public class GraphDatabase {
 			if(!q.isEmpty()) {
 				double nextDistance = q.peek();
 				CityNode next = qMap.get(nextDistance);
+				totalDistance += nextDistnace;
 				return next.planRoute(g, closestParent, qMap, q);
 			}
 			
@@ -144,6 +148,10 @@ public class GraphDatabase {
 			
 		}
 		
+	}
+	
+	pulic int getDistance() {
+		return totalDistnace;
 	}
 }
 

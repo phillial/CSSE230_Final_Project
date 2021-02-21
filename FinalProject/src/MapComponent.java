@@ -145,14 +145,14 @@ public class MapComponent{
         
          ActionListener button = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	 String start = (String) startCity.getSelectedItem();
-        	 String finish = (String) finishCity.getSelectedItem();
-        	 String distance = maxDistance.getSelectedText();
-        	 String time = maxDistance.getSelectedText();
-        	
-        	 String result = buttonPressed(start, finish, distance, time);
-        	 System.out.println(result);
-        	 blank.setText(result);
+        	String start = (String) startCity.getSelectedItem();
+       	 	String finish = (String) finishCity.getSelectedItem();
+       	 	String distance = maxDistance.getText();
+       	 	String time = maxTime.getText();
+       	 	String result = buttonPressed(start, finish, distance, time);
+       	 	System.out.println(result);
+       	 	outer.removeAll();
+       	 	outer.add(createAnswer(result, answer, distance, time));
          }
         };
         findRoute.addActionListener(button);
@@ -175,7 +175,28 @@ public class MapComponent{
 	}
 	
 	public JTextArea createAnswer(String result, JTextArea answer) {
-		answer = new JTextArea(result);
+		int distance = db.getDistance();
+		int hours = distance / 60;
+		int minutes = distance % 60;
+		int max = Integer.MAX_VALUE;
+		if(maxDistance == null || maxDistance.equals("") || Integer.parseInt(maxDistance) < 0)  {
+			maxDistance = ""+max+"";
+		}
+		if(maxTime == null || maxTime.equals("") || Integer.parseInt(maxTime) < 0) {
+			maxTime = ""+max+"";
+		}
+		if(distance > Integer.parseInt(maxDistance)) {
+			if(hours >= Integer.parseInt(maxTime)) {
+				answer = new JTextArea("You destination could not be reached in the time and distance requested.");
+			}else {
+				answer = new JTextArea("Your destination is too far away and cannot be reached in the distance requested.");
+			}
+		}else if(hours >= Integer.parseInt(maxTime)) {
+			answer = new JTextArea("Your destination can not be reached in the time allowed.");
+		}else {
+			answer = new JTextArea(result + ".\n Total Distance is "+ db.getDistance() +" Miles. \n Total time is "+ hours +" hours and "+ minutes+" minutes.");
+		}
+		
         answer.setBackground(Color.WHITE);
         answer.setLineWrap(true);
         answer.setWrapStyleWord(true);
