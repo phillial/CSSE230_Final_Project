@@ -79,7 +79,6 @@ public class MapComponent{
 		startCity.setEditable(true);
 
 		inner.add(startCity);
-		String start = (String) startCity.getSelectedItem();
 		addSpace(inner, blank);
 		
 		startCity.addActionListener(new ActionListener(){
@@ -102,7 +101,6 @@ public class MapComponent{
 		JComboBox finishCity = new JComboBox(possibleCities);
 		finishCity.setEditable(true);
         inner.add(finishCity);
-        String finish = (String) finishCity.getSelectedItem();
         addSpace(inner, blank);
         
         finishCity.addActionListener(new ActionListener(){
@@ -123,7 +121,6 @@ public class MapComponent{
 		
         JTextField maxDistance = new JTextField();
         inner.add(maxDistance);
-        String distance = maxDistance.getSelectedText();
         
         addSpace(inner, blank);
         
@@ -133,11 +130,17 @@ public class MapComponent{
 		
         JTextField maxTime = new JTextField();
         inner.add(maxTime);
-        String time = maxDistance.getSelectedText();
         
          ActionListener button = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-        	 blank.setText(buttonPressed(start, finish, distance, time));
+        	 String start = (String) startCity.getSelectedItem();
+        	 String finish = (String) finishCity.getSelectedItem();
+        	 String distance = maxDistance.getSelectedText();
+        	 String time = maxDistance.getSelectedText();
+        	
+        	 String result = buttonPressed(start, finish, distance, time);
+        	 System.out.println(result);
+        	 blank.setText(result);
          }
         };
         findRoute.addActionListener(button);
@@ -194,8 +197,9 @@ public class MapComponent{
 		for(int i = 0; i < resultString.size(); i++) {
 			if(i == resultString.size() -1) {
 				result+= resultString.get(i);
+			} else {
+				result+= resultString.get(i)+" to ";
 			}
-			result+= resultString.get(i)+" to ";
 		}
 		return result;
 	}
