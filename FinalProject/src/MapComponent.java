@@ -44,14 +44,26 @@ public class MapComponent{
         this.panel =new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        //c.fill = GridBagConstraints.HORIZONTAL;
+
         JPanel inner = new JPanel();
         inner.setBackground(Color.GRAY);
         inner.setLayout(new GridLayout(9, 2));
         
         panel.setBounds(1500, 0, 500, 1000);    
-        panel.setBackground(Color.gray);  
-       
+        panel.setBackground(Color.gray); 
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        panel.add(inner, c);
+        
+        
+        JPanel outer = new JPanel();
+        outer.setBackground(Color.GRAY);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 1; 
+        c.anchor = GridBagConstraints.SOUTH;
+        panel.add(outer, c);
         
         JButton findRoute = new JButton("Calculate Distance");
         inner.add(findRoute);
@@ -156,13 +168,25 @@ public class MapComponent{
         picPanel.setBounds(0,0,1499,1000);
         picPanel.add(picLabel);
         display.add(picPanel);
-        panel.add(inner);
         
         display.add(panel);  
         display.setSize(2000, 1000);    
         display.setLayout(null);
 	}
 	
+	public JTextArea createAnswer(String result, JTextArea answer) {
+		answer = new JTextArea(result);
+        answer.setBackground(Color.WHITE);
+        answer.setLineWrap(true);
+        answer.setWrapStyleWord(true);
+        answer.setEditable(false);
+        answer.setSize(200, 200);
+        answer.setVisible(true);
+        JScrollPane scroll = new JScrollPane(answer);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		return answer;
+	}
+
 	protected String[] search(String city, String[] c) {
 		ArrayList<String> newList = new ArrayList<String>();
 		if(city.length() > 0) {
